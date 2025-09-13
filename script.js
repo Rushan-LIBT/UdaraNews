@@ -1,4 +1,93 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Hero Slider functionality
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    let currentSlide = 0;
+    let slideInterval;
+
+    function updateSlide(index) {
+        // Remove active class from all slides and dots
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (dots[i]) dots[i].classList.remove('active');
+        });
+
+        // Add active class to current slide and dot
+        if (slides[index]) {
+            slides[index].classList.add('active');
+            
+            // Update background image based on slide data-bg-image attribute
+            const bgImage = slides[index].getAttribute('data-bg-image');
+            if (bgImage) {
+                slides[index].style.backgroundImage = `url(${bgImage})`;
+            }
+            
+            // Fallback to gradient if no image
+            const bg = slides[index].getAttribute('data-bg');
+            if (bg && !bgImage) {
+                slides[index].style.background = bg;
+            }
+        }
+        if (dots[index]) dots[index].classList.add('active');
+        
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+        const next = (currentSlide + 1) % slides.length;
+        updateSlide(next);
+    }
+
+    function prevSlide() {
+        const prev = (currentSlide - 1 + slides.length) % slides.length;
+        updateSlide(prev);
+    }
+
+    function startSlideShow() {
+        slideInterval = setInterval(nextSlide, 5000); // Auto-advance every 5 seconds
+    }
+
+    function stopSlideShow() {
+        clearInterval(slideInterval);
+    }
+
+    // Initialize slider
+    if (slides.length > 0) {
+        updateSlide(0);
+        startSlideShow();
+
+        // Navigation button events
+        if (nextBtn) nextBtn.addEventListener('click', () => {
+            stopSlideShow();
+            nextSlide();
+            startSlideShow();
+        });
+
+        if (prevBtn) prevBtn.addEventListener('click', () => {
+            stopSlideShow();
+            prevSlide();
+            startSlideShow();
+        });
+
+        // Dot navigation events
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                stopSlideShow();
+                updateSlide(index);
+                startSlideShow();
+            });
+        });
+
+        // Pause on hover
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', stopSlideShow);
+            heroSection.addEventListener('mouseleave', startSlideShow);
+        }
+    }
+
     // Mobile menu functionality
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');

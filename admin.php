@@ -1,5 +1,27 @@
 <?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: admin_login.php');
+    exit;
+}
+
+// Check for session timeout (24 hours)
+if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time']) > 86400) {
+    session_destroy();
+    header('Location: admin_login.php');
+    exit;
+}
+
 require_once 'config.php';
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: admin_login.php');
+    exit;
+}
 
 // Handle form submissions
 $message = '';
@@ -63,14 +85,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all news for display
+// Get all news for display and statistics
 try {
     $pdo = getDBConnection();
     $stmt = $pdo->prepare("SELECT * FROM news ORDER BY created_at DESC");
     $stmt->execute();
     $allNews = $stmt->fetchAll();
+    
+    // Get statistics
+    $totalArticles = count($allNews);
+    $featuredArticles = count(array_filter($allNews, function($article) { return $article['is_featured']; }));
+    $categories = array_count_values(array_column($allNews, 'category'));
+    $todayArticles = count(array_filter($allNews, function($article) { 
+        return date('Y-m-d', strtotime($article['created_at'])) === date('Y-m-d'); 
+    }));
+    
 } catch (Exception $e) {
     $allNews = [];
+    $totalArticles = $featuredArticles = $todayArticles = 0;
+    $categories = [];
     $message = 'Error loading news: ' . $e->getMessage();
     $messageType = 'error';
 }
@@ -104,20 +137,49 @@ try {
         .header {
             background: linear-gradient(135deg, #2c3e50, #3498db);
             color: white;
-            padding: 2rem 0;
+            padding: 2rem;
             margin-bottom: 2rem;
-            border-radius: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .header h1 {
             text-align: center;
             font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .header p {
             text-align: center;
-            margin-top: 0.5rem;
             opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 0.5rem;
         }
 
         .message {
@@ -308,14 +370,47 @@ try {
             flex-wrap: wrap;
         }
 
-        .back-link {
-            display: inline-block;
+        .admin-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(52, 73, 94, 0.1);
+            border-radius: 10px;
+            border: 1px solid #ecf0f1;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-welcome {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .login-time {
+            color: #7f8c8d;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
+            }
+
+            .admin-header-bar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .admin-info {
+                flex-direction: column;
+                gap: 0.5rem;
             }
 
             .header h1 {
@@ -346,7 +441,14 @@ try {
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="btn btn-secondary back-link">← Back to Website</a>
+        <div class="admin-header-bar">
+            <a href="index.html" class="btn btn-secondary">← Back to Website</a>
+            <div class="admin-info">
+                <span class="admin-welcome">Welcome, <?php echo htmlspecialchars($_SESSION['admin_username']); ?>!</span>
+                <span class="login-time">Logged in: <?php echo date('M j, Y g:i A', $_SESSION['login_time']); ?></span>
+                <a href="?logout=1" class="btn btn-danger" onclick="return confirm('Are you sure you want to logout?')">🚪 Logout</a>
+            </div>
+        </div>
         
         <div class="header">
             <h1>Udara NEWS Admin Panel</h1>
@@ -358,6 +460,25 @@ try {
                 <?php echo htmlspecialchars($message); ?>
             </div>
         <?php endif; ?>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number"><?php echo $totalArticles; ?></div>
+                <div class="stat-label">Total Articles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><?php echo $featuredArticles; ?></div>
+                <div class="stat-label">Featured Articles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><?php echo $todayArticles; ?></div>
+                <div class="stat-label">Published Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><?php echo count($categories); ?></div>
+                <div class="stat-label">Categories Used</div>
+            </div>
+        </div>
 
         <div class="form-section">
             <h2>Add New Article</h2>
@@ -437,11 +558,12 @@ try {
                                 <td><?php echo date('M j, Y', strtotime($news['created_at'])); ?></td>
                                 <td>
                                     <div class="actions">
-                                        <button onclick="editArticle(<?php echo $news['id']; ?>)" class="btn btn-success">Edit</button>
+                                        <a href="edit_article.php?id=<?php echo $news['id']; ?>" class="btn btn-success">✏️ Edit</a>
+                                        <a href="view_article.php?id=<?php echo $news['id']; ?>" class="btn btn-primary">👁️ View</a>
                                         <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this article?')">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<?php echo $news['id']; ?>">
-                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            <button type="submit" class="btn btn-danger">🗑️ Delete</button>
                                         </form>
                                     </div>
                                 </td>
@@ -454,46 +576,24 @@ try {
     </div>
 
     <script>
-        function editArticle(id) {
-            // Simple edit functionality - in a real application, you might use a modal or separate page
-            const title = prompt('Enter new title:');
-            if (title) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.style.display = 'none';
-                
-                const inputs = [
-                    {name: 'action', value: 'edit'},
-                    {name: 'id', value: id},
-                    {name: 'title', value: title},
-                    {name: 'summary', value: prompt('Enter summary:') || ''},
-                    {name: 'content', value: prompt('Enter content:') || ''},
-                    {name: 'image', value: prompt('Enter image URL:') || ''},
-                    {name: 'category', value: prompt('Enter category (politics, sports, technology, business, general):') || 'general'},
-                    {name: 'author', value: prompt('Enter author:') || 'Admin'}
-                ];
-                
-                inputs.forEach(input => {
-                    const field = document.createElement('input');
-                    field.type = 'hidden';
-                    field.name = input.name;
-                    field.value = input.value;
-                    form.appendChild(field);
+        // Auto-clear form after successful submission
+        <?php if ($messageType === 'success' && isset($_POST['action']) && $_POST['action'] === 'add'): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelector('form[method="POST"]').reset();
+            });
+        <?php endif; ?>
+
+        // Confirmation for delete actions
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('button[type="submit"].btn-danger');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('⚠️ Are you sure you want to delete this article? This action cannot be undone.')) {
+                        e.preventDefault();
+                    }
                 });
-                
-                const featured = confirm('Make this article featured?');
-                if (featured) {
-                    const featuredInput = document.createElement('input');
-                    featuredInput.type = 'hidden';
-                    featuredInput.name = 'is_featured';
-                    featuredInput.value = '1';
-                    form.appendChild(featuredInput);
-                }
-                
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
+            });
+        });
     </script>
 </body>
 </html>
