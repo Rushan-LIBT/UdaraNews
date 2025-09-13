@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Udara NEWS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1>Udara <span class="brand-highlight">NEWS</span></h1>
+                </div>
+                <div class="nav-menu" id="nav-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="politics.html" class="nav-link">Politics</a>
+                    <a href="sports.html" class="nav-link">Sports</a>
+                    <a href="#technology" class="nav-link">Technology</a>
+                    <a href="#business" class="nav-link">Business</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="contact.html" class="nav-link active">Contact</a>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section contact-hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Contact Udara NEWS</h1>
+                <p class="hero-subtitle">Get in touch with our editorial team and share your news tips</p>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-grid">
+                    <div class="contact-form-container">
+                        <h2>Send us a Message</h2>
+                        <form class="contact-form" id="contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="first-name">First Name *</label>
+                                    <input type="text" id="first-name" name="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name">Last Name *</label>
+                                    <input type="text" id="last-name" name="lastName" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" name="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject *</label>
+                                <select id="subject" name="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="news-tip">News Tip</option>
+                                    <option value="general-inquiry">General Inquiry</option>
+                                    <option value="press-release">Press Release</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="technical-issue">Technical Issue</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message *</label>
+                                <textarea id="message" name="message" rows="6" required placeholder="Please provide details about your inquiry..."></textarea>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="newsletter" name="newsletter">
+                                    <span class="checkmark"></span>
+                                    Subscribe to our newsletter for the latest news updates
+                                </label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="privacy" name="privacy" required>
+                                    <span class="checkmark"></span>
+                                    I agree to the <a href="#privacy-policy">Privacy Policy</a> and <a href="#terms">Terms of Service</a> *
+                                </label>
+                            </div>
+                            <button type="submit" class="submit-btn">Send Message</button>
+                        </form>
+                        <div id="form-status" class="form-status"></div>
+                    </div>
+
+                    <div class="contact-info-container">
+                        <h3>Contact Information</h3>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon">📧</div>
+                                <div class="contact-details">
+                                    <h4>Email</h4>
+                                    <p>info@udaranews.com</p>
+                                    <p>news@udaranews.com</p>
+                                    <p>editor@udaranews.com</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📞</div>
+                                <div class="contact-details">
+                                    <h4>Phone</h4>
+                                    <p>Main: +1 (555) 123-4567</p>
+                                    <p>Newsroom: +1 (555) 123-4568</p>
+                                    <p>Tips Hotline: +1 (555) 123-4569</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-details">
+                                    <h4>Address</h4>
+                                    <p>Udara NEWS Headquarters</p>
+                                    <p>123 News Street</p>
+                                    <p>Media District</p>
+                                    <p>New York, NY 10001</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">🕒</div>
+                                <div class="contact-details">
+                                    <h4>Newsroom Hours</h4>
+                                    <p>Monday - Friday: 6:00 AM - 10:00 PM</p>
+                                    <p>Saturday: 8:00 AM - 8:00 PM</p>
+                                    <p>Sunday: 10:00 AM - 6:00 PM</p>
+                                    <p class="highlight">Breaking news coverage 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-contact">
+                            <h4>Follow Us</h4>
+                            <div class="social-links">
+                                <a href="#" class="social-link">📘 Facebook</a>
+                                <a href="#" class="social-link">🐦 Twitter</a>
+                                <a href="#" class="social-link">📷 Instagram</a>
+                                <a href="#" class="social-link">💼 LinkedIn</a>
+                                <a href="#" class="social-link">📺 YouTube</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="departments-section">
+            <div class="container">
+                <h2 class="section-title">Editorial Departments</h2>
+                <div class="departments-grid">
+                    <div class="department-card">
+                        <h3>News & Politics</h3>
+                        <p>Breaking news, government affairs, and political analysis</p>
+                        <a href="mailto:politics@udaranews.com" class="department-email">politics@udaranews.com</a>
+                    </div>
+                    <div class="department-card">
+                        <h3>Sports</h3>
+                        <p>Live scores, game coverage, and sports analysis</p>
+                        <a href="mailto:sports@udaranews.com" class="department-email">sports@udaranews.com</a>
+                    </div>
+                    <div class="department-card">
+                        <h3>Technology</h3>
+                        <p>Tech innovations, product reviews, and digital trends</p>
+                        <a href="mailto:tech@udaranews.com" class="department-email">tech@udaranews.com</a>
+                    </div>
+                    <div class="department-card">
+                        <h3>Business</h3>
+                        <p>Market analysis, company news, and economic reports</p>
+                        <a href="mailto:business@udaranews.com" class="department-email">business@udaranews.com</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Udara <span class="brand-highlight">NEWS</span></h3>
+                    <p>Your trusted source for breaking news and updates from around the world.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">📘</a>
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">📷</a>
+                        <a href="#" class="social-link">💼</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="politics.html">Politics</a></li>
+                        <li><a href="sports.html">Sports</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#business">Business</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p>📧 info@udaranews.com</p>
+                    <p>📞 +1 (555) 123-4567</p>
+                    <p>📍 123 News Street, City, Country</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Udara NEWS. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // Search functionality - redirect to homepage with search query
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = e.target.value.trim();
+                    if (query.length > 0) {
+                        window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
+
+        // Contact form handling
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData);
+            
+            // Show loading state
+            formStatus.innerHTML = '<div class="status-message loading">Sending your message...</div>';
+            
+            try {
+                // Simulate API call (replace with actual endpoint)
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Show success message
+                formStatus.innerHTML = '<div class="status-message success">Thank you for your message! We\'ll get back to you soon.</div>';
+                contactForm.reset();
+                
+                // Clear success message after 5 seconds
+                setTimeout(() => {
+                    formStatus.innerHTML = '';
+                }, 5000);
+                
+            } catch (error) {
+                formStatus.innerHTML = '<div class="status-message error">Sorry, there was an error sending your message. Please try again.</div>';
+            }
+        });
+    </script>
+</body>
+</html>
