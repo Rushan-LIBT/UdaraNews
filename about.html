@@ -15,9 +15,9 @@
                     <h1>Udara <span class="brand-highlight">NEWS</span></h1>
                 </div>
                 <div class="nav-menu" id="nav-menu">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="politics.html" class="nav-link">Politics</a>
-                    <a href="sports.html" class="nav-link">Sports</a>
+                    <a href="index.php" class="nav-link">Home</a>
+                    <a href="politics.php" class="nav-link">Politics</a>
+                    <a href="sports.php" class="nav-link">Sports</a>
                     <a href="#technology" class="nav-link">Technology</a>
                     <a href="#business" class="nav-link">Business</a>
                     <a href="about.html" class="nav-link active">About</a>
@@ -33,10 +33,31 @@
     </header>
 
     <main>
-        <section class="hero-section about-hero">
-            <div class="hero-content">
-                <h1 class="hero-title">About Udara NEWS</h1>
-                <p class="hero-subtitle">Your trusted source for reliable, timely, and comprehensive news coverage</p>
+        <section class="hero-section" id="about-hero">
+            <div class="hero-slider">
+                <div class="slide active" data-bg-image="">
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-category">Latest News</span>
+                        <h1 class="slide-title">About Udara NEWS</h1>
+                        <p class="slide-excerpt">Your trusted source for reliable, timely, and comprehensive news coverage</p>
+                        <div class="slide-meta">
+                            <span class="slide-time">Stay Informed</span>
+                            <span class="slide-author">By Udara News Team</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-controls" style="display: none;">
+                <button class="slider-btn prev-btn">‹</button>
+                <div class="slider-dots"></div>
+                <button class="slider-btn next-btn">›</button>
+            </div>
+
+            <div class="hero-search">
+                <input type="text" class="hero-search-input" placeholder="Search all news...">
+                <button class="hero-search-btn">🔍</button>
             </div>
         </section>
 
@@ -255,8 +276,8 @@
                 <div class="footer-section">
                     <h4>Categories</h4>
                     <ul>
-                        <li><a href="politics.html">Politics</a></li>
-                        <li><a href="sports.html">Sports</a></li>
+                        <li><a href="politics.php">Politics</a></li>
+                        <li><a href="sports.php">Sports</a></li>
                         <li><a href="#technology">Technology</a></li>
                         <li><a href="#business">Business</a></li>
                     </ul>
@@ -308,7 +329,7 @@
                 if (e.key === 'Enter') {
                     const query = e.target.value.trim();
                     if (query.length > 0) {
-                        window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+                        window.location.href = `index.php?search=${encodeURIComponent(query)}`;
                     }
                 }
             });
@@ -353,6 +374,148 @@
 
         // Initialize counter animation
         document.addEventListener('DOMContentLoaded', animateCounters);
+
+        // Load hero section with latest general news
+        function loadAboutHero() {
+            fetch('api/news.php?action=get_all&limit=5')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.news.length > 0) {
+                        const latestNews = data.news.slice(0, 3); // Get top 3 articles
+                        updateAboutHeroSlider(latestNews);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading about hero news:', error);
+                });
+        }
+
+        // Update hero slider for about page
+        function updateAboutHeroSlider(articles) {
+            const heroSlider = document.querySelector('#about-hero .hero-slider');
+            if (!heroSlider || articles.length === 0) return;
+
+            // Clear existing slides and add new ones
+            heroSlider.innerHTML = '';
+
+            articles.forEach((article, index) => {
+                const slide = document.createElement('div');
+                slide.className = index === 0 ? 'slide active' : 'slide';
+
+                slide.innerHTML = `
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-category">Latest News</span>
+                        <h1 class="slide-title">${article.title}</h1>
+                        <p class="slide-excerpt">${article.summary}</p>
+                        <div class="slide-meta">
+                            <span class="slide-time">${formatTimeAgo(article.created_at)}</span>
+                            <span class="slide-author">By ${article.author}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Set background image if available
+                if (article.image) {
+                    slide.style.backgroundImage = `url(${article.image})`;
+                    slide.style.backgroundSize = 'cover';
+                    slide.style.backgroundPosition = 'center';
+                } else {
+                    const colors = ['#3498db', '#e74c3c', '#2ecc71'];
+                    const color = colors[index % colors.length];
+                    slide.style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+                }
+
+                heroSlider.appendChild(slide);
+            });
+
+            // Setup slider controls if multiple slides
+            if (articles.length > 1) {
+                setupAboutHeroSlider();
+                const sliderControls = document.querySelector('#about-hero .slider-controls');
+                if (sliderControls) {
+                    sliderControls.style.display = 'flex';
+                    updateAboutSliderDots(articles.length);
+                }
+            }
+        }
+
+        // Setup about hero slider functionality
+        function setupAboutHeroSlider() {
+            const slides = document.querySelectorAll('#about-hero .slide');
+            const nextBtn = document.querySelector('#about-hero .next-btn');
+            const prevBtn = document.querySelector('#about-hero .prev-btn');
+            let currentSlide = 0;
+            let slideInterval;
+
+            function updateSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                const next = (currentSlide + 1) % slides.length;
+                updateSlide(next);
+            }
+
+            function prevSlide() {
+                const prev = (currentSlide - 1 + slides.length) % slides.length;
+                updateSlide(prev);
+            }
+
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+            // Auto-advance slides
+            slideInterval = setInterval(nextSlide, 5000);
+
+            // Pause on hover
+            const heroSection = document.querySelector('#about-hero');
+            if (heroSection) {
+                heroSection.addEventListener('mouseenter', () => clearInterval(slideInterval));
+                heroSection.addEventListener('mouseleave', () => {
+                    slideInterval = setInterval(nextSlide, 5000);
+                });
+            }
+        }
+
+        // Update slider dots for about page
+        function updateAboutSliderDots(count) {
+            const dotsContainer = document.querySelector('#about-hero .slider-dots');
+            if (!dotsContainer) return;
+
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const dot = document.createElement('span');
+                dot.className = i === 0 ? 'dot active' : 'dot';
+                dot.addEventListener('click', () => {
+                    document.querySelectorAll('#about-hero .slide').forEach((slide, index) => {
+                        slide.classList.toggle('active', index === i);
+                    });
+                    document.querySelectorAll('#about-hero .dot').forEach((d, index) => {
+                        d.classList.toggle('active', index === i);
+                    });
+                });
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // Format time ago helper
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays <= 7) return `${diffDays} days ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Initialize about hero on page load
+        document.addEventListener('DOMContentLoaded', loadAboutHero);
     </script>
 </body>
 </html>

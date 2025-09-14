@@ -78,7 +78,7 @@ function insertSampleData($pdo) {
             'title' => 'Breaking: Major Political Development in National Elections',
             'summary' => 'Significant changes announced in the upcoming national elections process, affecting millions of voters across the country.',
             'content' => 'In a groundbreaking announcement today, election officials revealed major reforms to the national voting system. These changes, designed to increase transparency and accessibility, will be implemented before the next major election cycle. The reforms include extended voting hours, improved security measures, and enhanced accessibility features for disabled voters. Political analysts suggest these changes could significantly impact voter turnout and election outcomes.',
-            'image' => 'https://via.placeholder.com/800x400/3498db/ffffff?text=Politics+News',
+            'image' => 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'politics',
             'author' => 'Sarah Johnson',
             'is_featured' => 1
@@ -87,7 +87,7 @@ function insertSampleData($pdo) {
             'title' => 'Tech Giants Announce Revolutionary AI Partnership',
             'summary' => 'Leading technology companies join forces to develop next-generation artificial intelligence solutions for global challenges.',
             'content' => 'Major technology corporations have announced a unprecedented partnership to accelerate artificial intelligence research and development. This collaboration aims to address climate change, healthcare challenges, and educational disparities through innovative AI solutions. The partnership includes shared research facilities, joint funding initiatives, and open-source technology sharing. Industry experts predict this could mark a new era in AI development and application.',
-            'image' => 'https://via.placeholder.com/800x400/e74c3c/ffffff?text=Technology+News',
+            'image' => 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'technology',
             'author' => 'Michael Chen',
             'is_featured' => 1
@@ -96,7 +96,7 @@ function insertSampleData($pdo) {
             'title' => 'Championship Finals Set Record-Breaking Attendance',
             'summary' => 'Sports fans flock to witness historic championship match, setting new attendance records and television viewership.',
             'content' => 'The highly anticipated championship finals drew unprecedented crowds both in-person and through broadcast viewership. Stadium officials confirmed that ticket demand exceeded capacity by 400%, while television and streaming numbers broke all previous records. The event showcased outstanding athletic performances and demonstrated the unifying power of sports. Local businesses reported significant economic benefits from the influx of visitors.',
-            'image' => 'https://via.placeholder.com/800x400/27ae60/ffffff?text=Sports+News',
+            'image' => 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'sports',
             'author' => 'David Rodriguez',
             'is_featured' => 0
@@ -105,7 +105,7 @@ function insertSampleData($pdo) {
             'title' => 'Global Markets Show Strong Recovery Trends',
             'summary' => 'International financial markets demonstrate resilience with sustained growth across multiple sectors and regions.',
             'content' => 'Financial analysts report encouraging signs of economic recovery as global markets continue their upward trajectory. Key indicators show improved consumer confidence, increased business investments, and stabilizing inflation rates. The recovery spans multiple sectors including technology, healthcare, and renewable energy. Economists attribute this positive trend to coordinated policy responses and innovative business adaptation strategies.',
-            'image' => 'https://via.placeholder.com/800x400/f39c12/ffffff?text=Business+News',
+            'image' => 'https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'business',
             'author' => 'Emma Thompson',
             'is_featured' => 1
@@ -114,7 +114,7 @@ function insertSampleData($pdo) {
             'title' => 'Revolutionary Green Energy Project Launches',
             'summary' => 'Innovative renewable energy initiative promises to transform power generation and reduce carbon emissions significantly.',
             'content' => 'A groundbreaking renewable energy project has officially launched, featuring cutting-edge solar and wind technologies. The project aims to generate clean electricity for over 2 million households while creating thousands of jobs in the green energy sector. Environmental scientists praise the initiative as a crucial step toward achieving carbon neutrality goals. The project includes advanced energy storage systems and smart grid integration.',
-            'image' => 'https://via.placeholder.com/800x400/2ecc71/ffffff?text=Environment+News',
+            'image' => 'https://images.unsplash.com/photo-1569163139394-de44eed40de5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'general',
             'author' => 'Dr. Lisa Park',
             'is_featured' => 0
@@ -123,7 +123,7 @@ function insertSampleData($pdo) {
             'title' => 'International Space Mission Achieves Historic Milestone',
             'summary' => 'Space exploration reaches new heights with successful completion of ambitious international collaborative mission.',
             'content' => 'The international space community celebrates a historic achievement as the collaborative mission successfully completes its primary objectives. This mission, involving multiple countries and space agencies, has advanced our understanding of deep space exploration and planetary science. The mission returned valuable scientific data and demonstrated the effectiveness of international cooperation in space exploration. Future missions are already being planned based on these successful outcomes.',
-            'image' => 'https://via.placeholder.com/800x400/9b59b6/ffffff?text=Science+News',
+            'image' => 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'technology',
             'author' => 'Dr. James Wilson',
             'is_featured' => 0
@@ -132,7 +132,7 @@ function insertSampleData($pdo) {
             'title' => 'Healthcare Innovation Promises Better Patient Outcomes',
             'summary' => 'Medical researchers unveil breakthrough treatment methods that could revolutionize patient care and recovery times.',
             'content' => 'Medical professionals announce significant advances in treatment methodologies that promise to improve patient outcomes across various health conditions. The innovative approaches combine traditional medicine with cutting-edge technology, resulting in faster recovery times and reduced side effects. Clinical trials have shown remarkable success rates, leading to expedited approval processes. Healthcare systems worldwide are preparing to implement these breakthrough treatments.',
-            'image' => 'https://via.placeholder.com/800x400/1abc9c/ffffff?text=Healthcare+News',
+            'image' => 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'general',
             'author' => 'Dr. Rachel Adams',
             'is_featured' => 0
@@ -141,7 +141,7 @@ function insertSampleData($pdo) {
             'title' => 'Olympic Preparations Showcase Global Unity',
             'summary' => 'Athletes from around the world demonstrate exceptional preparation and sportsmanship ahead of major international competition.',
             'content' => 'The upcoming Olympic Games showcase remarkable examples of international cooperation and athletic excellence. Athletes from diverse backgrounds have been training together, sharing techniques, and building friendships that transcend national boundaries. The preparation phase has highlighted the universal values of sport: dedication, respect, and friendship. Olympic officials report unprecedented enthusiasm and participation levels from both athletes and host communities.',
-            'image' => 'https://via.placeholder.com/800x400/34495e/ffffff?text=Olympics+News',
+            'image' => 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80',
             'category' => 'sports',
             'author' => 'Maria Gonzalez',
             'is_featured' => 0
@@ -166,6 +166,7 @@ function insertSampleData($pdo) {
     }
 }
 
-// Initialize database on first run
-initializeDatabase();
+// Initialize database only when explicitly called
+// Comment out automatic initialization to prevent infinite loading
+// initializeDatabase();
 ?>

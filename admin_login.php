@@ -282,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="back-link">
-            <a href="index.html">← Back to Website</a>
+            <a href="index.php">← Back to Website</a>
         </div>
 
         <div class="security-note">

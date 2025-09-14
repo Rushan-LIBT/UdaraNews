@@ -15,9 +15,9 @@
                     <h1>Udara <span class="brand-highlight">NEWS</span></h1>
                 </div>
                 <div class="nav-menu" id="nav-menu">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="politics.html" class="nav-link">Politics</a>
-                    <a href="sports.html" class="nav-link">Sports</a>
+                    <a href="index.php" class="nav-link">Home</a>
+                    <a href="politics.php" class="nav-link">Politics</a>
+                    <a href="sports.php" class="nav-link">Sports</a>
                     <a href="#technology" class="nav-link">Technology</a>
                     <a href="#business" class="nav-link">Business</a>
                     <a href="about.html" class="nav-link">About</a>
@@ -33,10 +33,31 @@
     </header>
 
     <main>
-        <section class="hero-section contact-hero">
-            <div class="hero-content">
-                <h1 class="hero-title">Contact Udara NEWS</h1>
-                <p class="hero-subtitle">Get in touch with our editorial team and share your news tips</p>
+        <section class="hero-section" id="contact-hero">
+            <div class="hero-slider">
+                <div class="slide active" data-bg-image="">
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-category">Contact Us</span>
+                        <h1 class="slide-title">Contact Udara NEWS</h1>
+                        <p class="slide-excerpt">Get in touch with our editorial team and share your news tips</p>
+                        <div class="slide-meta">
+                            <span class="slide-time">Always Available</span>
+                            <span class="slide-author">By Editorial Team</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-controls" style="display: none;">
+                <button class="slider-btn prev-btn">‹</button>
+                <div class="slider-dots"></div>
+                <button class="slider-btn next-btn">›</button>
+            </div>
+
+            <div class="hero-search">
+                <input type="text" class="hero-search-input" placeholder="Search all news...">
+                <button class="hero-search-btn">🔍</button>
             </div>
         </section>
 
@@ -205,8 +226,8 @@
                 <div class="footer-section">
                     <h4>Categories</h4>
                     <ul>
-                        <li><a href="politics.html">Politics</a></li>
-                        <li><a href="sports.html">Sports</a></li>
+                        <li><a href="politics.php">Politics</a></li>
+                        <li><a href="sports.php">Sports</a></li>
                         <li><a href="#technology">Technology</a></li>
                         <li><a href="#business">Business</a></li>
                     </ul>
@@ -294,6 +315,143 @@
                 formStatus.innerHTML = '<div class="status-message error">Sorry, there was an error sending your message. Please try again.</div>';
             }
         });
+
+        // Load hero section with latest news
+        function loadContactHero() {
+            fetch('api/news.php?action=get_all&limit=5')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.news.length > 0) {
+                        const latestNews = data.news.slice(0, 3);
+                        updateContactHeroSlider(latestNews);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading contact hero news:', error);
+                });
+        }
+
+        // Update hero slider for contact page
+        function updateContactHeroSlider(articles) {
+            const heroSlider = document.querySelector('#contact-hero .hero-slider');
+            if (!heroSlider || articles.length === 0) return;
+
+            heroSlider.innerHTML = '';
+
+            articles.forEach((article, index) => {
+                const slide = document.createElement('div');
+                slide.className = index === 0 ? 'slide active' : 'slide';
+
+                slide.innerHTML = `
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-category">Latest News</span>
+                        <h1 class="slide-title">${article.title}</h1>
+                        <p class="slide-excerpt">${article.summary}</p>
+                        <div class="slide-meta">
+                            <span class="slide-time">${formatTimeAgo(article.created_at)}</span>
+                            <span class="slide-author">By ${article.author}</span>
+                        </div>
+                    </div>
+                `;
+
+                if (article.image) {
+                    slide.style.backgroundImage = `url(${article.image})`;
+                    slide.style.backgroundSize = 'cover';
+                    slide.style.backgroundPosition = 'center';
+                } else {
+                    const colors = ['#3498db', '#e74c3c', '#2ecc71'];
+                    const color = colors[index % colors.length];
+                    slide.style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+                }
+
+                heroSlider.appendChild(slide);
+            });
+
+            if (articles.length > 1) {
+                setupContactHeroSlider();
+                const sliderControls = document.querySelector('#contact-hero .slider-controls');
+                if (sliderControls) {
+                    sliderControls.style.display = 'flex';
+                    updateContactSliderDots(articles.length);
+                }
+            }
+        }
+
+        // Setup contact hero slider functionality
+        function setupContactHeroSlider() {
+            const slides = document.querySelectorAll('#contact-hero .slide');
+            const nextBtn = document.querySelector('#contact-hero .next-btn');
+            const prevBtn = document.querySelector('#contact-hero .prev-btn');
+            let currentSlide = 0;
+            let slideInterval;
+
+            function updateSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                const next = (currentSlide + 1) % slides.length;
+                updateSlide(next);
+            }
+
+            function prevSlide() {
+                const prev = (currentSlide - 1 + slides.length) % slides.length;
+                updateSlide(prev);
+            }
+
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+            slideInterval = setInterval(nextSlide, 5000);
+
+            const heroSection = document.querySelector('#contact-hero');
+            if (heroSection) {
+                heroSection.addEventListener('mouseenter', () => clearInterval(slideInterval));
+                heroSection.addEventListener('mouseleave', () => {
+                    slideInterval = setInterval(nextSlide, 5000);
+                });
+            }
+        }
+
+        // Update slider dots for contact page
+        function updateContactSliderDots(count) {
+            const dotsContainer = document.querySelector('#contact-hero .slider-dots');
+            if (!dotsContainer) return;
+
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const dot = document.createElement('span');
+                dot.className = i === 0 ? 'dot active' : 'dot';
+                dot.addEventListener('click', () => {
+                    document.querySelectorAll('#contact-hero .slide').forEach((slide, index) => {
+                        slide.classList.toggle('active', index === i);
+                    });
+                    document.querySelectorAll('#contact-hero .dot').forEach((d, index) => {
+                        d.classList.toggle('active', index === i);
+                    });
+                });
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // Format time ago helper
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays <= 7) return `${diffDays} days ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Initialize contact hero on page load
+        document.addEventListener('DOMContentLoaded', loadContactHero);
     </script>
 </body>
 </html>

@@ -91,7 +91,7 @@ try {
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -338,7 +338,7 @@ try {
             </div>
 
             <div class="edit-form">
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" value="<?php echo $article['id']; ?>">
                     
@@ -380,13 +380,36 @@ try {
                     </div>
 
                     <div class="form-group">
-                        <label for="image">Featured Image URL</label>
-                        <input type="url" id="image" name="image" value="<?php echo htmlspecialchars($article['image']); ?>" placeholder="https://example.com/image.jpg">
-                        <?php if ($article['image']): ?>
-                            <div class="image-preview">
-                                <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="Current image" onerror="this.style.display='none'">
+                        <label for="image">Featured Image</label>
+                        <div class="image-upload-section">
+                            <div class="upload-tabs">
+                                <button type="button" class="tab-btn active" data-tab="upload">Upload Image</button>
+                                <button type="button" class="tab-btn" data-tab="url">Use URL</button>
                             </div>
-                        <?php endif; ?>
+
+                            <div class="tab-content active" id="upload-tab">
+                                <div class="file-upload-area" id="file-upload-area">
+                                    <input type="file" id="image-file" name="image-file" accept="image/*" style="display: none;">
+                                    <div class="upload-placeholder">
+                                        <div class="upload-icon">📁</div>
+                                        <p>Click here to upload an image</p>
+                                        <small>JPG, PNG, GIF, WebP (Max 5MB)</small>
+                                    </div>
+                                    <div class="upload-preview" id="upload-preview" style="display: none;"></div>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="url-tab">
+                                <input type="url" id="image-url" name="image" value="<?php echo htmlspecialchars($article['image']); ?>" placeholder="https://example.com/image.jpg">
+                                <div class="url-preview" id="url-preview">
+                                    <?php if ($article['image']): ?>
+                                        <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="Current image" onerror="this.style.display='none'">
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="final-image-path" name="image" value="<?php echo htmlspecialchars($article['image']); ?>">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -404,14 +427,167 @@ try {
     </div>
 
     <script>
-        // Image preview functionality
-        document.getElementById('image').addEventListener('input', function() {
-            const imageUrl = this.value;
-            const preview = document.querySelector('.image-preview img');
-            
-            if (imageUrl && preview) {
-                preview.src = imageUrl;
-                preview.style.display = 'block';
+        // Image Upload Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const fileUploadArea = document.getElementById('file-upload-area');
+            const fileInput = document.getElementById('image-file');
+            const uploadPreview = document.getElementById('upload-preview');
+            const urlInput = document.getElementById('image-url');
+            const urlPreview = document.getElementById('url-preview');
+            const finalImagePath = document.getElementById('final-image-path');
+
+            // Set initial tab based on current image
+            const currentImage = '<?php echo addslashes($article['image']); ?>';
+            if (currentImage && !currentImage.startsWith('uploads/')) {
+                // Current image is a URL, switch to URL tab
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.querySelector('[data-tab="url"]').classList.add('active');
+                document.getElementById('url-tab').classList.add('active');
+            }
+
+            // Tab switching
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Remove active classes
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    document.getElementById(targetTab + '-tab').classList.add('active');
+                });
+            });
+
+            // File upload area click
+            fileUploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // Drag and drop functionality
+            fileUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            fileUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            fileUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+
+            // File input change
+            fileInput.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    handleFileUpload(this.files[0]);
+                }
+            });
+
+            // URL input change
+            urlInput.addEventListener('input', function() {
+                const url = this.value.trim();
+                finalImagePath.value = url;
+                if (url) {
+                    showUrlPreview(url);
+                } else {
+                    urlPreview.innerHTML = '';
+                }
+            });
+
+            function handleFileUpload(file) {
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.');
+                    return;
+                }
+
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File too large. Maximum size is 5MB.');
+                    return;
+                }
+
+                // Show loading state
+                showUploadPreview(file, true);
+
+                // Upload file
+                const formData = new FormData();
+                formData.append('image', file);
+
+                fetch('upload_image.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        finalImagePath.value = data.image_path;
+                        showUploadPreview(file, false, data.image_path);
+                    } else {
+                        alert('Upload failed: ' + data.message);
+                        uploadPreview.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    alert('Upload failed. Please try again.');
+                    uploadPreview.style.display = 'none';
+                });
+            }
+
+            function showUploadPreview(file, isLoading, imagePath = null) {
+                uploadPreview.style.display = 'block';
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadPreview.innerHTML = `
+                        <div class="file-info">
+                            <img src="${e.target.result}" alt="Preview">
+                            <div class="file-details">
+                                <div class="file-name">${file.name}</div>
+                                <div class="file-size">${formatFileSize(file.size)}</div>
+                                ${isLoading ? '<div style="color: #3498db;">Uploading...</div>' : '<div style="color: #27ae60;">✓ Uploaded successfully</div>'}
+                            </div>
+                            ${!isLoading ? '<button type="button" class="remove-file" onclick="removeUploadedFile()">Remove</button>' : ''}
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function showUrlPreview(url) {
+                urlPreview.innerHTML = `
+                    <img src="${url}" alt="URL Preview" onerror="this.style.display='none'">
+                `;
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Make removeUploadedFile global
+            window.removeUploadedFile = function() {
+                uploadPreview.style.display = 'none';
+                fileInput.value = '';
+                finalImagePath.value = '';
             }
         });
 
